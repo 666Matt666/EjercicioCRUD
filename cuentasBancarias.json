@@ -1,0 +1,11 @@
+[
+  { "numeroCuenta": "10145", 
+	"nombreTitular": "Ana López", 
+	"saldo": 1500.0 },
+  { "numeroCuenta": "20245", 
+	"nombreTitular": "Carlos Ruiz", 
+	"saldo": 2000.0 },
+  { "numeroCuenta": "30345", 
+	"nombreTitular": "María Gómez", 
+	"saldo": 2500.0 }
+]
