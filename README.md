@@ -13,10 +13,10 @@ Los fuentes fueron subidos en https://github.com/666Matt666/EjercicioCRUD
 El desarrollo fue diseñado en capas
 Se adjunta el archivo "REST API basics- CRUD, test & variable.postman_collection.json" para importar en Postman y probar las funcionalidades.
 
-    "REST API basics- CRUD, test & variable.postman_collection.json" se corre con RUN adjuntando el archivo "cuentasBancarias.json"
-
     Lo primero que se debe realizar para la prueba es ejecutar el POST Obtener TOKEN (este tiene una duracion de una hora)
     El resto de los metodos, tienen agregada la variable token ({{Access_token}}) en el Authorization
+
+    Luego, para agregar mas cuentas "REST API basics- CRUD, test & variable.postman_collection.json" se corre con RUN adjuntando el archivo "cuentasBancarias.json"
 
 Microservicio de Gestión de Cuentas Bancarias
 
