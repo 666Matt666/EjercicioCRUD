@@ -16,7 +16,9 @@
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
-							"});"
+							"});",
+							"",
+							"console.info(\"Token guardado en la variable de entorno 'Access_token': \" + pm.environment.get(\"Access_token\"));"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -24,6 +26,16 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Access_token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"body": {
@@ -36,16 +48,20 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/cuentas/verificar/12345",
+					"raw": "http://localhost:8080/cuentas?12345",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"cuentas",
-						"verificar",
-						"12345"
+						"cuentas"
+					],
+					"query": [
+						{
+							"key": "12345",
+							"value": null
+						}
 					]
 				},
 				"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
@@ -69,6 +85,16 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Access_token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"body": {
@@ -96,15 +122,50 @@
 			"response": []
 		},
 		{
+			"name": "Post crear muchas cuentas (solo esta, se ejecuta del RUN con el cuentasBancarias.json)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"numeroCuenta\": \"{{numeroCuenta}}\",\r\n  \"nombreTitular\": \"{{nombreTitular}}\",\r\n  \"saldo\": {{saldo}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/cuentas",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"cuentas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Post crear cuenta",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Successful POST request\", function () {",
-							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-							"});",
 							""
 						],
 						"type": "text/javascript",
@@ -113,6 +174,16 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -140,14 +211,14 @@
 			"response": []
 		},
 		{
-			"name": "Post crear muchas cuentas",
+			"name": "Modificar una cuenta",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Successful POST request\", function () {",
-							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"pm.test(\"Successful PUT request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
 							"});",
 							""
 						],
@@ -157,11 +228,21 @@
 				}
 			],
 			"request": {
-				"method": "POST",
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "[\n  {\n    \"numeroDeCuenta\": \"101\",\n    \"nombreTitular\": \"Ana López\",\n    \"saldo\": 1500.0\n  },\n  {\n    \"numeroDeCuenta\": \"102\",\n    \"nombreTitular\": \"Carlos Ruiz\",\n    \"saldo\": 2000.0\n  },\n  {\n    \"numeroDeCuenta\": \"103\",\n    \"nombreTitular\": \"María Gómez\",\n    \"saldo\": 2500.0\n  }\n]",
+					"raw": "{\n  \"numeroCuenta\": \"12345\",\n  \"nombreTitular\": \"Ana López Modificada\",\n  \"saldo\": 2000.0\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -169,61 +250,15 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/cuentas",
+					"raw": "http://localhost:8080/cuentas/12345",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"cuentas"
-					]
-				},
-				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
-			},
-			"response": []
-		},
-		{
-			"name": "Modificar una cuenta",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"pm.test(\"Successful PUT request\", function () {",
-							"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 204]);",
-							"});",
-							""
-						]
-					}
-				}
-			],
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"name\": \"Add your name in the body\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{base_url}}/info?id=1",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"info"
-					],
-					"query": [
-						{
-							"key": "id",
-							"value": "1"
-						}
+						"cuentas",
+						"12345"
 					]
 				},
 				"description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
@@ -237,10 +272,7 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Successful DELETE request\", function () {",
-							"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
-							"});",
-							""
+							"console.info(\"Token guardado en la variable de entorno 'Access_token': \" + pm.environment.get(\"Access_token\"));"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -248,6 +280,16 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Access_token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "DELETE",
 				"header": [],
 				"body": {
@@ -272,6 +314,68 @@
 					]
 				},
 				"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener TOKEN",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verifica que la respuesta sea un status 200 (OK)\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Parsea el cuerpo de la respuesta como JSON\r",
+							"var jsonResponse = pm.response.json();\r",
+							"\r",
+							"// Verifica que el cuerpo de la respuesta tenga la propiedad \"token\"\r",
+							"pm.test(\"Response has a 'token' property\", function () {\r",
+							"    pm.expect(jsonResponse).to.have.property('token');\r",
+							"});\r",
+							"\r",
+							"// Guarda el valor del token en una variable de entorno llamada \"Token\"\r",
+							"if (jsonResponse.token) {\r",
+							"    pm.environment.set(\"Access_token\", jsonResponse.token);\r",
+							"    console.info(\"Token guardado en la variable de entorno 'Token': \" + jsonResponse.token);\r",
+							"   \r",
+							"} else {\r",
+							"    console.error(\"El token no se encontró en la respuesta.\");\r",
+							"}\r",
+							" console.info(\"Token guardado en la variable de entorno 'Token': \" + pm.environment.get(\"Access_token\"));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"user@ejemplo.com\",\r\n  \"password\": \"mi-password\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"login"
+					]
+				}
 			},
 			"response": []
 		}
