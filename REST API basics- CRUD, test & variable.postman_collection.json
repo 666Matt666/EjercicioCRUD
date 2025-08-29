@@ -16,7 +16,9 @@
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
-							"});"
+							"});",
+							"",
+							"console.info(\"Token guardado en la variable de entorno 'Access_token': \" + pm.environment.get(\"Access_token\"));"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -24,6 +26,16 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Access_token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"body": {
@@ -36,16 +48,20 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/cuentas/verificar/12345",
+					"raw": "http://localhost:8080/cuentas?12345",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "8080",
 					"path": [
-						"cuentas",
-						"verificar",
-						"12345"
+						"cuentas"
+					],
+					"query": [
+						{
+							"key": "12345",
+							"value": null
+						}
 					]
 				},
 				"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
@@ -69,6 +85,16 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Access_token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"body": {
@@ -96,8 +122,18 @@
 			"response": []
 		},
 		{
-			"name": "Post crear muchas cuentas",
+			"name": "Post crear muchas cuentas (solo esta, se ejecuta del RUN con el cuentasBancarias.json)",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Access_token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -130,9 +166,6 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Successful POST request\", function () {",
-							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
-							"});",
 							""
 						],
 						"type": "text/javascript",
@@ -141,6 +174,16 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -185,6 +228,16 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Access_token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "PUT",
 				"header": [],
 				"body": {
@@ -219,10 +272,7 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Successful DELETE request\", function () {",
-							"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
-							"});",
-							""
+							"console.info(\"Token guardado en la variable de entorno 'Access_token': \" + pm.environment.get(\"Access_token\"));"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -230,6 +280,16 @@
 				}
 			],
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{Access_token}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "DELETE",
 				"header": [],
 				"body": {
@@ -254,6 +314,68 @@
 					]
 				},
 				"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "Obtener TOKEN",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verifica que la respuesta sea un status 200 (OK)\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Parsea el cuerpo de la respuesta como JSON\r",
+							"var jsonResponse = pm.response.json();\r",
+							"\r",
+							"// Verifica que el cuerpo de la respuesta tenga la propiedad \"token\"\r",
+							"pm.test(\"Response has a 'token' property\", function () {\r",
+							"    pm.expect(jsonResponse).to.have.property('token');\r",
+							"});\r",
+							"\r",
+							"// Guarda el valor del token en una variable de entorno llamada \"Token\"\r",
+							"if (jsonResponse.token) {\r",
+							"    pm.environment.set(\"Access_token\", jsonResponse.token);\r",
+							"    console.info(\"Token guardado en la variable de entorno 'Token': \" + jsonResponse.token);\r",
+							"   \r",
+							"} else {\r",
+							"    console.error(\"El token no se encontró en la respuesta.\");\r",
+							"}\r",
+							" console.info(\"Token guardado en la variable de entorno 'Token': \" + pm.environment.get(\"Access_token\"));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"user@ejemplo.com\",\r\n  \"password\": \"mi-password\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"login"
+					]
+				}
 			},
 			"response": []
 		}

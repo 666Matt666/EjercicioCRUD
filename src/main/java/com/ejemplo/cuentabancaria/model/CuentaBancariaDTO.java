@@ -5,12 +5,15 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 /**
  * Objeto de Transferencia de Datos (DTO) que representa una Cuenta Bancaria.
  * Esta clase se usa para la comunicación de datos a través de la API.
  * Su propósito es desacoplar la capa de la API de la entidad de la base de datos,
  * permitiendo un mayor control sobre qué datos se exponen y se validan.
  */
+@Schema(description = "DTO para la transferencia de datos de la cuenta bancaria")
 public class CuentaBancariaDTO {
     // El ID se incluye para operaciones como la actualización, pero no es necesario para la creación.
     private Long id;
